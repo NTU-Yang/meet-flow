@@ -15,6 +15,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Plus, Users, Calendar, User, CalendarCheck } from "lucide-react";
+import { getCurrentDateTime } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -228,6 +229,17 @@ export default function MeetFlow() {
   const [open, setOpen] = useState(false);
   const [viewId, setViewId] = useState("xiao-liang");
 
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => setTime(getCurrentDateTime());
+
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const me = members.find((m) => m.id === "me")!;
   const others = members.filter((m) => m.id !== "me");
   const viewing = members.find((m) => m.id === viewId) ?? others[0];
@@ -272,12 +284,20 @@ export default function MeetFlow() {
     <div className="min-h-screen bg-background">
       {/* ── Header ── */}
       <header className="border-b bg-background/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-3">
-          <CalendarCheck className="w-5 h-5" />
-          <h1 className="text-lg font-semibold tracking-tight">MeetFlow</h1>
-          <Badge variant="secondary" className="text-xs font-normal">
-            Beta
-          </Badge>
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+
+          <div className="flex items-center gap-3">
+            <CalendarCheck className="w-5 h-5" />
+            <h1 className="text-lg font-semibold tracking-tight">MeetFlow</h1>
+            <Badge variant="secondary" className="text-xs font-normal">
+              Beta
+            </Badge>
+          </div>
+
+          <div className="text-sm text-muted-foreground">
+            {time}
+          </div>
+
         </div>
       </header>
 
